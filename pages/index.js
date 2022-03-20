@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import Alert from "../components/alert/alert";
 import Layout, { siteTitle } from "../components/layout";
-import SassComponent from "../components/sass_component/sass_component";
+// import SassComponent from "../components/sass_component/sass_component";
 import utilStyles from "../styles/utils.module.css";
 
 const type = "";
@@ -33,7 +33,7 @@ export default function Home() {
       </Alert>
       <h1 className="text-3xl">this part is styled by tailwindcss.</h1>
       {/* ↓コンパイルに失敗するがsass使う予定はないので飛ばします */}
-      <SassComponent />
+      {/* <SassComponent /> */}
     </>
   );
 }
