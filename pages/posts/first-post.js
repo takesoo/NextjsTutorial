@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function FirstPost() {
@@ -9,6 +10,12 @@ export default function FirstPost() {
           <a>Back to home</a>
         </Link>
       </h2>
+      <Image
+        src={"/images/profile.jpeg"}
+        height={144}
+        width={144}
+        alt="profile image"
+      ></Image>
     </>
   );
 }
