@@ -30,6 +30,7 @@ export default function Home() {
           toolでAlertコンポーネントのtypeに'success'か'error'を入れると色が変わります
         </p>
       </Alert>
+      <h1 className="text-3xl">this part is styled by tailwindcss.</h1>
     </>
   );
 }
