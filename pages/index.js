@@ -24,6 +24,10 @@ export default function Home() {
         <Link href="/posts/first-post">
           <a>first post →</a>
         </Link>
+        <br />
+        <Link href="/user">
+          <a>react query page →</a>
+        </Link>
       </Layout>
       <Alert type={type}>
         <p>
