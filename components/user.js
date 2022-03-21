@@ -7,19 +7,18 @@ import { useState, useEffect } from "react";
 import { useQuery } from "react-query";
 
 const fetchUsers = async () => {
-  const res = await fetch("https://jsonplaceholder.typicode.co");
+  const res = await fetch("https://jsonplaceholder.typicode.com/users");
   return res.json();
 };
 
 export const User = () => {
-  /**
-   * isErrorとerrorでエラー内容を表示する
-   * 第三引数でリトライ回数などを設定できる
-   */
+  const { data, isLoading, isError, error, status } = useQuery(
+    "users",
+    fetchUsers
+  );
 
-  const { data, isLoading, isError, error } = useQuery("users", fetchUsers, {
-    retry: false,
-  });
+  console.log(status);
+
   if (isLoading) {
     return <span>Loading...</span>;
   }
