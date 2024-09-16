@@ -8,5 +8,5 @@
 	"[javascript]": {
 		"editor.maxTokenizationLineLength": 2500
 	},
-	"cSpell.words": ["Chakra"]
+	"cSpell.words": ["Chakra", "todos"]
 }
