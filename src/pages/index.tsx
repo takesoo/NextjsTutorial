@@ -1,12 +1,6 @@
-import {
-	Box,
-	Button,
-	Checkbox,
-	Input,
-	List,
-	ListItem,
-	Text,
-} from "@chakra-ui/react";
+import AddTodoForm from "@/components/add-todo-form";
+import { TodoList } from "@/components/todo-list";
+import { Box } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
@@ -27,7 +21,7 @@ const saveTodosToLocalStorage = (todos: Todo[]) => {
 
 export default function Home() {
 	const [todos, setTodos] = useState<Todo[]>([]);
-	const [newTodo, setNewTodo] = useState("");
+	const [newTodoTitle, setNewTodoTitle] = useState("");
 
 	// ページが読み込まれた時にローカルストレージからTODOを読み込む
 	useEffect(() => {
@@ -39,13 +33,13 @@ export default function Home() {
 	const addTodo = () => {
 		const newTodoItem: Todo = {
 			id: uuidv4(),
-			title: newTodo,
+			title: newTodoTitle,
 			isCompleted: false,
 		};
 		const updatedTodos = [...todos, newTodoItem];
 		setTodos(updatedTodos);
 		saveTodosToLocalStorage(updatedTodos);
-		setNewTodo("");
+		setNewTodoTitle("");
 	};
 
 	// TODOを削除する
@@ -65,40 +59,16 @@ export default function Home() {
 	};
 	return (
 		<Box p={5}>
-			<Input
-				placeholder="New Todo"
-				value={newTodo}
-				onChange={(e) => setNewTodo(e.target.value)}
+			<AddTodoForm
+				newTodoTitle={newTodoTitle}
+				setNewTodoTitle={setNewTodoTitle}
+				addTodo={addTodo}
 			/>
-			<Button onClick={addTodo} colorScheme="blue" mb={4}>
-				Add Todo
-			</Button>
-
-			<List spacing={3}>
-				{todos.map((todo) => (
-					<ListItem key={todo.id} display="flex" alignItems="center">
-						<Checkbox
-							isChecked={todo.isCompleted}
-							onChange={() => {
-								toggleComplete(todo.id);
-							}}
-							mr={2}
-						/>
-						<Text flex={1} as={todo.isCompleted ? "del" : undefined}>
-							{todo.title}
-						</Text>
-						<Button
-							colorScheme="red"
-							size={"sm"}
-							onClick={() => {
-								deleteTodo(todo.id);
-							}}
-						>
-							Delete
-						</Button>
-					</ListItem>
-				))}
-			</List>
+			<TodoList
+				todos={todos}
+				toggleComplete={toggleComplete}
+				deleteTodo={deleteTodo}
+			/>
 		</Box>
 	);
 }
