@@ -1,8 +1,8 @@
+import type { Todo } from "@/types";
 import { Button, Checkbox, ListItem, Text } from "@chakra-ui/react";
-import { useCallback } from "react";
 
 interface TodoItemProps {
-  todo: { id: string; title: string; isCompleted: boolean };
+  todo: Todo;
   toggleComplete: (id: string) => void;
   deleteTodo: (id: string) => void;
 }

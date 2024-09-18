@@ -1,14 +1,9 @@
 import AddTodoForm from "@/components/add-todo-form";
 import { TodoList } from "@/components/todo-list";
+import type { Todo } from "@/types";
 import { Box } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-
-interface Todo {
-  id: string;
-  title: string;
-  isCompleted: boolean;
-}
 
 const getTodosFromLocalStorage = (): Todo[] => {
   const storedTodos = localStorage.getItem("todos");
