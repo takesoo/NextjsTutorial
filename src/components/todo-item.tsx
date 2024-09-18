@@ -1,11 +1,11 @@
 import type { Todo } from "@/types";
 import { Button, Checkbox, ListItem, Text } from "@chakra-ui/react";
 
-interface TodoItemProps {
+type TodoItemProps = {
   todo: Todo;
   toggleComplete: (id: string) => void;
   deleteTodo: (id: string) => void;
-}
+};
 export const TodoItem = ({
   todo,
   toggleComplete,

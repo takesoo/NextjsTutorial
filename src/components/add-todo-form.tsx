@@ -5,11 +5,11 @@ type AddTodoFormProps = {
   setNewTodoTitle: (title: string) => void;
   addTodo: () => void;
 };
-export default function AddTodoForm({
+export const AddTodoForm = ({
   newTodoTitle,
   setNewTodoTitle,
   addTodo,
-}: AddTodoFormProps): JSX.Element {
+}: AddTodoFormProps): JSX.Element => {
   const handleSubmit = () => {
     addTodo();
     setNewTodoTitle("");
@@ -26,4 +26,4 @@ export default function AddTodoForm({
       </Button>
     </>
   );
-}
+};
