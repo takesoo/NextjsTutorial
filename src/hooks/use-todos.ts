@@ -1,24 +1,20 @@
+import { LocalStorageTodoRepository } from "@/repositories/local-storage-todo-repository";
+import type { TodoRepository } from "@/repositories/todo-repository";
 import type { Todo } from "@/types";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-
-const getTodosFromLocalStorage = (): Todo[] => {
-  const storedTodos = localStorage.getItem("todos");
-  return storedTodos ? JSON.parse(storedTodos) : [];
-};
-
-const saveTodosToLocalStorage = (todos: Todo[]) => {
-  localStorage.setItem("todos", JSON.stringify(todos));
-};
 
 export const useTodos = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodoTitle, setNewTodoTitle] = useState("");
 
+  // データアクセスロジックをrepositoryに抽象化した
+  const todoRepository: TodoRepository = new LocalStorageTodoRepository();
+
   useEffect(() => {
-    const storedTodos = getTodosFromLocalStorage();
+    const storedTodos = todoRepository.getTodos();
     setTodos(storedTodos);
-  }, []);
+  });
 
   const addTodo = () => {
     const newTodoItem: Todo = {
@@ -28,13 +24,13 @@ export const useTodos = () => {
     };
     const updatedTodos = [...todos, newTodoItem];
     setTodos(updatedTodos);
-    saveTodosToLocalStorage(updatedTodos);
+    todoRepository.saveTodos(updatedTodos);
   };
 
   const deleteTodo = (id: string) => {
     const updatedTodos = todos.filter((todo) => todo.id !== id);
     setTodos(updatedTodos);
-    saveTodosToLocalStorage(updatedTodos);
+    todoRepository.saveTodos(updatedTodos);
   };
 
   const toggleComplete = (id: string) => {
@@ -42,7 +38,7 @@ export const useTodos = () => {
       todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo,
     );
     setTodos(updatedTodos);
-    saveTodosToLocalStorage(updatedTodos);
+    todoRepository.saveTodos(updatedTodos);
   };
 
   return {
