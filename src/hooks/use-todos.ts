@@ -1,28 +1,23 @@
+import { Todo as TodoEntity } from "@/entities/todo";
 import { LocalStorageTodoRepository } from "@/repositories/local-storage-todo-repository";
 import type { TodoRepository } from "@/repositories/todo-repository";
 import type { Todo } from "@/types";
 import { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 
 export const useTodos = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodoTitle, setNewTodoTitle] = useState("");
 
-  // データアクセスロジックをrepositoryに抽象化した
   const todoRepository: TodoRepository = new LocalStorageTodoRepository();
 
   useEffect(() => {
     const storedTodos = todoRepository.getTodos();
     setTodos(storedTodos);
-  });
+  }, [todoRepository]);
 
   const addTodo = () => {
-    const newTodoItem: Todo = {
-      id: uuidv4(),
-      title: newTodoTitle,
-      isCompleted: false,
-    };
-    const updatedTodos = [...todos, newTodoItem];
+    const newTodo = new TodoEntity(newTodoTitle);
+    const updatedTodos = [...todos, newTodo];
     setTodos(updatedTodos);
     todoRepository.saveTodos(updatedTodos);
   };
@@ -35,7 +30,9 @@ export const useTodos = () => {
 
   const toggleComplete = (id: string) => {
     const updatedTodos = todos.map((todo) =>
-      todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo,
+      todo.id === id
+        ? new TodoEntity(todo.title, !todo.isCompleted, todo.id)
+        : todo,
     );
     setTodos(updatedTodos);
     todoRepository.saveTodos(updatedTodos);
