@@ -10,10 +10,10 @@ export class FirebaseTodoRepository implements TodoRepository {
     this.apiClient = apiClient;
   }
 
-  async getTodos(): Promise<Todo[]> {
+  async getTodos() {
     const data = await this.apiClient.get<{
       [key: string]: { title: string; isCompleted: boolean; id: string };
-    }>("todos.json");
+    }>("/todos.json");
     if (!data) return [];
     return Object.keys(data).map((key) => {
       const properties = data[key];
@@ -25,17 +25,17 @@ export class FirebaseTodoRepository implements TodoRepository {
     });
   }
 
-  async addTodo(todo: Todo): Promise<void> {
+  async addTodo(todo: Todo) {
     // キーにtodo.idを指定するためにputで作成しています
-    this.apiClient.put(`todos/${todo.id}.json`, todo);
+    await this.apiClient.put(`/todos/${todo.id}.json`, todo);
   }
 
-  async deleteTodo(id: string): Promise<void> {
-    this.apiClient.delete(`todos/${id}.json`);
+  async deleteTodo(id: string) {
+    await this.apiClient.delete(`/todos/${id}.json`);
   }
 
-  async toggleComplete(todo: Todo): Promise<void> {
-    this.apiClient.patch(`todos/${todo.id}.json`, {
+  async toggleComplete(todo: Todo) {
+    await this.apiClient.patch(`/todos/${todo.id}.json`, {
       isCompleted: todo.isCompleted,
     });
   }

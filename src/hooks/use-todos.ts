@@ -1,5 +1,5 @@
 import { Todo as TodoEntity } from "@/entities/todo";
-import { FetchApiClient } from "@/libs/api-clients/fetch-api-client";
+import { AxiosApiClient } from "@/libs/api-clients/axios-api-client";
 import { FirebaseTodoRepository } from "@/repositories/firebase-todo-repository";
 import type { TodoRepository } from "@/repositories/todo-repository";
 import type { Todo } from "@/types";
@@ -10,7 +10,7 @@ export const useTodos = () => {
   const [newTodoTitle, setNewTodoTitle] = useState("");
 
   const todoRepository: TodoRepository = useMemo(() => {
-    const apiClient = new FetchApiClient();
+    const apiClient = new AxiosApiClient();
     return new FirebaseTodoRepository(apiClient);
   }, []);
 
