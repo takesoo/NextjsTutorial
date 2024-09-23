@@ -30,7 +30,8 @@ export const useTodos = () => {
 
     try {
       await todoRepository.addTodo(newTodo);
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error("failed to add todo", error);
       throw new Error("failed to add todo");
     }
   };
@@ -42,7 +43,8 @@ export const useTodos = () => {
 
     try {
       await todoRepository.deleteTodo(id);
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error("failed to delete todo", error);
       throw new Error("failed to delete todo");
     }
   };
@@ -61,7 +63,8 @@ export const useTodos = () => {
 
     try {
       await todoRepository.toggleComplete(todoToUpdate);
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error("failed to update todo", error);
       throw new Error("failed to update todo");
     }
   };
