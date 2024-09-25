@@ -12,7 +12,6 @@ export const AddTodoForm = ({
 }: AddTodoFormProps): JSX.Element => {
   const handleSubmit = () => {
     addTodo();
-    setNewTodoTitle("");
   };
   return (
     <>

@@ -3,10 +3,10 @@ import { AxiosApiClient } from "@/libs/api-clients/axios-api-client";
 import { FirebaseTodoRepository } from "@/repositories/firebase-todo-repository";
 import type { TodoRepository } from "@/repositories/todo-repository";
 import type { Todo } from "@/types";
-import { useEffect, useMemo, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 
 export const useTodos = () => {
-  const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodoTitle, setNewTodoTitle] = useState("");
 
   const todoRepository: TodoRepository = useMemo(() => {
@@ -14,67 +14,62 @@ export const useTodos = () => {
     return new FirebaseTodoRepository(apiClient);
   }, []);
 
-  useEffect(() => {
-    const fetchTodos = async () => {
-      const fetchedTodos = await todoRepository.getTodos();
-      setTodos(fetchedTodos);
-    };
+  const queryClient = useQueryClient();
 
-    fetchTodos();
-  }, [todoRepository]);
+  const {
+    data: todos,
+    isLoading,
+    error,
+  } = useQuery<Todo[]>({
+    queryKey: ["todos"],
+    queryFn: async () => {
+      return await todoRepository.getTodos();
+    },
+  });
 
-  // firebase realtime databaseがレスポンスとデータ更新にタイムラグがあるので、先にstateを更新してからDBの更新をしています。
-  const addTodo = async () => {
-    const newTodo = new TodoEntity(newTodoTitle);
-    setTodos([...todos, newTodo]);
+  const addTodoMutation = useMutation({
+    mutationFn: () => {
+      const newTodo = new TodoEntity(newTodoTitle);
+      return todoRepository.addTodo(newTodo);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] }); // キャッシュを無効にして再フェッチ
+      setNewTodoTitle("");
+    },
+  });
 
-    try {
-      await todoRepository.addTodo(newTodo);
-    } catch (error: unknown) {
-      console.error("failed to add todo", error);
-      throw new Error("failed to add todo");
-    }
-  };
+  const deleteTodoMutation = useMutation({
+    mutationFn: (id: string) => {
+      return todoRepository.deleteTodo(id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
 
-  // firebase realtime databaseがレスポンスとデータ更新にタイムラグがあるので、先にstateを更新してからDBの更新をしています。
-  const deleteTodo = async (id: string) => {
-    const updatedTodos = todos.filter((todo) => todo.id !== id);
-    setTodos(updatedTodos);
+  const toggleCompleteMutation = useMutation({
+    mutationFn: (todo: Todo) => {
+      const todoToUpdate = new TodoEntity(
+        todo.title,
+        !todo.isCompleted,
+        todo.id,
+      );
 
-    try {
-      await todoRepository.deleteTodo(id);
-    } catch (error: unknown) {
-      console.error("failed to delete todo", error);
-      throw new Error("failed to delete todo");
-    }
-  };
-
-  // firebase realtime databaseがレスポンスとデータ更新にタイムラグがあるので、先にstateを更新してからDBの更新をしています。
-  const toggleComplete = async (id: string) => {
-    const updatedTodos = todos.map((todo) => {
-      return todo.id === id
-        ? new TodoEntity(todo.title, !todo.isCompleted, todo.id)
-        : todo;
-    });
-    setTodos(updatedTodos);
-
-    const todoToUpdate = updatedTodos.find((todo) => todo.id === id);
-    if (!todoToUpdate) return;
-
-    try {
-      await todoRepository.toggleComplete(todoToUpdate);
-    } catch (error: unknown) {
-      console.error("failed to update todo", error);
-      throw new Error("failed to update todo");
-    }
-  };
+      return todoRepository.toggleComplete(todoToUpdate);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
 
   return {
     todos,
+    isLoading,
+    error,
     newTodoTitle,
     setNewTodoTitle,
-    addTodo,
-    deleteTodo,
-    toggleComplete,
+    addTodo: () => addTodoMutation.mutate(),
+    deleteTodo: (id: string) => deleteTodoMutation.mutate(id),
+    toggleComplete: (todo: Todo) => toggleCompleteMutation.mutate(todo),
   };
 };

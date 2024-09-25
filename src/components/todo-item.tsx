@@ -3,7 +3,7 @@ import { Button, Checkbox, ListItem, Text } from "@chakra-ui/react";
 
 type TodoItemProps = {
   todo: Todo;
-  toggleComplete: (id: string) => void;
+  toggleComplete: (todo: Todo) => void;
   deleteTodo: (id: string) => void;
 };
 export const TodoItem = ({
@@ -12,7 +12,7 @@ export const TodoItem = ({
   deleteTodo,
 }: TodoItemProps): JSX.Element => {
   const handleToggleComplete = () => {
-    toggleComplete(todo.id);
+    toggleComplete(todo);
   };
   const handleDeleteTodo = () => {
     deleteTodo(todo.id);

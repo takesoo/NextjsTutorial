@@ -4,7 +4,7 @@ import { TodoItem } from "./todo-item";
 
 type TodoListProps = {
   todos: Todo[];
-  toggleComplete: (id: string) => void;
+  toggleComplete: (todo: Todo) => void;
   deleteTodo: (id: string) => void;
 };
 export const TodoList = ({
