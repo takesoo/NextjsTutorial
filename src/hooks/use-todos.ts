@@ -9,10 +9,11 @@ import { useMemo, useState } from "react";
 export const useTodos = () => {
   const [newTodoTitle, setNewTodoTitle] = useState("");
 
-  const todoRepository: TodoRepository = useMemo(() => {
-    const apiClient = new AxiosApiClient();
-    return new FirebaseTodoRepository(apiClient);
-  }, []);
+  // const todoRepository: TodoRepository = useMemo(() => {
+  //   const apiClient = new AxiosApiClient();
+  //   return new FirebaseTodoRepository(apiClient);
+  // }, []);
+  const todoRepository = new FirebaseTodoRepository(new AxiosApiClient());
 
   const queryClient = useQueryClient();
 
@@ -36,6 +37,9 @@ export const useTodos = () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] }); // キャッシュを無効にして再フェッチ
       setNewTodoTitle("");
     },
+    onError: (error) => {
+      console.error("Failed to add todo", error);
+    },
   });
 
   const deleteTodoMutation = useMutation({
@@ -44,6 +48,9 @@ export const useTodos = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+    onError: (error) => {
+      console.error("Failed to delete todo", error);
     },
   });
 
@@ -59,6 +66,9 @@ export const useTodos = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+    onError: (error) => {
+      console.error("Failed to toggle complete", error);
     },
   });
 

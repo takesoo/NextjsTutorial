@@ -20,7 +20,13 @@ export const AddTodoForm = ({
         value={newTodoTitle}
         onChange={(e) => setNewTodoTitle(e.target.value)}
       />
-      <Button onClick={handleSubmit} colorScheme="blue" mb={4}>
+      {console.log(newTodoTitle === "")}
+      <Button
+        onClick={handleSubmit}
+        colorScheme="blue"
+        mb={4}
+        isDisabled={newTodoTitle.trim() === ""}
+      >
         Add Todo
       </Button>
     </>
