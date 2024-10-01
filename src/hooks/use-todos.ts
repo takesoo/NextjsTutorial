@@ -9,10 +9,6 @@ import { useMemo, useState } from "react";
 export const useTodos = () => {
   const [newTodoTitle, setNewTodoTitle] = useState("");
 
-  // const todoRepository: TodoRepository = useMemo(() => {
-  //   const apiClient = new AxiosApiClient();
-  //   return new FirebaseTodoRepository(apiClient);
-  // }, []);
   const todoRepository = new FirebaseTodoRepository(new AxiosApiClient());
 
   const queryClient = useQueryClient();
