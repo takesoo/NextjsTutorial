@@ -20,7 +20,6 @@ export const AddTodoForm = ({
         value={newTodoTitle}
         onChange={(e) => setNewTodoTitle(e.target.value)}
       />
-      {console.log(newTodoTitle === "")}
       <Button
         onClick={handleSubmit}
         colorScheme="blue"
