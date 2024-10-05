@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddTodoForm component matches snapshot 1`] = `
+<div>
+  <input
+    class="chakra-input css-0"
+    placeholder="New Todo"
+    value=""
+  />
+  <button
+    class="chakra-button css-eaw8jh"
+    disabled=""
+    type="button"
+  >
+    Add Todo
+  </button>
+</div>
+`;
